@@ -1,0 +1,39 @@
+package tech.csm.service;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import tech.csm.model.Customer;
+import tech.csm.repository.CustomerRepo;
+
+@Service
+public class CustomerServiceImpl implements CustomerService {
+	
+	@Autowired
+	private CustomerRepo customerRepo;
+
+	@Override
+	public Customer saveCustomer(Customer customer) {
+		// TODO Auto-generated method stub
+		customer.setValidDate(new Date());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.MONTH, customer.getDuration());
+	    Date vt = cal.getTime();
+	    customer.setValidTo(vt);
+		return customerRepo.save(customer);
+	}
+
+	@Override
+	public List<Customer> getAllCustomers() {
+		// TODO Auto-generated method stub
+		return customerRepo.findAll();
+	}
+
+}
