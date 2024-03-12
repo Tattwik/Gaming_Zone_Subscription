@@ -1,0 +1,155 @@
+package tech.csm.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.ToString;
+
+@Entity
+@ToString
+public class Customer implements Serializable {
+    @Id
+    @Column(name="c_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer customerId;
+    
+    @Column(name="name")
+    private String customerName;
+    
+    @Column(name="email")
+    private String customerEmail;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dob;
+    
+    @Column(name="phone_no")
+    private String phoneNo;
+    
+    @Column(name="valid_from")
+    private Date validDate;
+    
+    @Column(name="valid_to")
+    private Date validTo;
+    
+    @Column(name="duration_in_months")
+    private Integer duration;
+    
+    @Column(name="total")
+    private Double total;
+    
+    @ManyToOne
+    @JoinColumn(name="sub_id")
+    private Subscription subscription;
+    
+    @Transient
+    private Integer age;
+    
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getCustomerEmail() {
+		return customerEmail;
+	}
+
+	public void setCustomerEmail(String customerEmail) {
+		this.customerEmail = customerEmail;
+	}
+
+	public Date getDob() {
+		return dob;
+	}
+
+	public void setDob(Date dob) {
+		this.dob = dob;
+	}
+
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+
+	public Date getValidDate() {
+		return validDate;
+	}
+
+	public void setValidDate(Date validDate) {
+		this.validDate = validDate;
+	}
+
+	public Integer getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+
+	public Subscription getSubscription() {
+		return subscription;
+	}
+
+	public void setSubscription(Subscription subscription) {
+		this.subscription = subscription;
+	}
+
+	public Date getValidTo() {
+		return validTo;
+	}
+
+	public void setValidTo(Date validTo) {
+		this.validTo = validTo;
+	}
+
+	@Override
+	public String toString() {
+		return "Customer [customerId=" + customerId + ", customerName=" + customerName + ", customerEmail="
+				+ customerEmail + ", dob=" + dob + ", phoneNo=" + phoneNo + ", validDate=" + validDate + ", validTo="
+				+ validTo + ", duration=" + duration + ", total=" + total + ", subscription=" + subscription + ", age="
+				+ age + "]";
+	}
+    
+    
+}
