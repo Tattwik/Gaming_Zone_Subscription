@@ -1,0 +1,66 @@
+package tech.csm.controller;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import tech.csm.model.Customer;
+import tech.csm.model.Subscription;
+import tech.csm.service.CustomerService;
+import tech.csm.service.SubscriptionService;
+
+@Controller
+public class GameController {
+
+	@Autowired
+	private SubscriptionService subscriptionService;
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@RequestMapping(path = "/getForm")
+	public String getForm(Model model, @ModelAttribute Customer customer) {
+		
+		List<Subscription> subList = subscriptionService.getAllSubs();
+		List<Customer> customerList = customerService.getAllCustomers();
+		for (Customer c : customerList) {
+			Calendar dob = Calendar.getInstance();
+			dob.setTime(c.getDob());
+			Calendar now = Calendar.getInstance();
+			now.setTime(new Date());
+			c.setAge(now.get(Calendar.YEAR) - dob.get(Calendar.YEAR));
+		}
+		model.addAttribute("customerList", customerList);
+		model.addAttribute("subList", subList);
+		return "gameSubForm";
+	}
+	
+	@PostMapping("/saveGamer")
+	public String saveGamer(@ModelAttribute Customer customer, RedirectAttributes rd) {
+		customer.setValidDate(new Date());
+		customer.setValidTo(new Date());
+		Customer c = customerService.saveCustomer(customer);
+		return "redirect:./getForm";
+	}
+	
+	@GetMapping("/findSubCostBySubandDuration")
+	public void findSubCostBySubandDuration(@RequestParam("subscriptionId") Integer sId, @RequestParam("duration") Integer du, HttpServletResponse resp) throws IOException {
+		Subscription sub = subscriptionService.findBySubId(sId);
+	    Double total = sub.getSubCost() * du;
+	    resp.getWriter().print(total);
+	}
+}
