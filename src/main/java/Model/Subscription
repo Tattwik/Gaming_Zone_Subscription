@@ -1,0 +1,54 @@
+package tech.csm.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import lombok.ToString;
+
+@Entity
+@ToString
+public class Subscription implements Serializable {
+    @Id
+    @Column(name="sub_id")
+    private Integer subId;
+    
+    @Column(name="sub_type")
+    private String subType;
+    
+    @Column(name="sub_cost")
+    private Double subCost;
+
+	public Integer getSubId() {
+		return subId;
+	}
+
+	public void setSubId(Integer subId) {
+		this.subId = subId;
+	}
+
+	public String getSubType() {
+		return subType;
+	}
+
+	public void setSubType(String subType) {
+		this.subType = subType;
+	}
+
+	public Double getSubCost() {
+		return subCost;
+	}
+
+	public void setSubCost(Double subCost) {
+		this.subCost = subCost;
+	}
+
+	@Override
+	public String toString() {
+		return "Subscription [subId=" + subId + ", subType=" + subType + ", subCost=" + subCost + "]";
+	}
+    
+    
+}
