@@ -1,0 +1,192 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Ultimate Gaming Zone Membership Registration Form</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+	integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+	crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-2.2.4.js"
+	integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+	crossorigin="anonymous"></script>
+
+</head>
+
+
+<body >
+	<div class="container mt-5">
+		<c:if test="${msg ne null}">
+			<div class="alert alert-success" id="aId">${msg}</div>
+		</c:if>
+		<div class="h2 text-center text-dark">&#x1F525; &#127918; Ultimate Gaming Zone Membership Registration Form &#127918; &#x1F525;</div>
+		<div class="card">
+			<div class="card-header bg-light h3 text-primary">Registration Details</div>
+
+			<div class="card-body">
+				<div class="container">
+					<form action="./saveGamer" method="post"
+						enctype="multipart/form-data" onsubmit="return validateForm()">
+						<input type="hidden" name="customerId" id="custId"
+							value="${customer.customerId}">
+						<div class="row">
+							<div class="col-4">
+								<label for="customerId" class="font-weight-bold">Customer Name</label>
+					     <input type="text" class="form-control" name="customerName"
+									id="customerNameId" value="${customer.customerName}">
+							</div>
+							<div class="col-4">
+								<label for="customerEmailId" class="font-weight-bold">Email</label> <input
+									type="email" class="form-control" name="customerEmail" id="customerEmailId"
+									value="${customer.customerEmail}">
+							</div>
+
+							<div class="col-3">
+								<label for="dobId" class="font-weight-bold">Date of
+									Birth</label> <input type="date" class="form-control" name="dob"
+									id="dobId" oninput="findAgeByDob(this.value)" value=<fmt:formatDate pattern="yyyy-MM-dd" 
+					                value="${customer.dob}"/>>
+							</div>
+							<div class="col-3">
+								<label for="phoneNoId" class="font-weight-bold">Phone No</label> <input
+									type="text" class="form-control" name="phoneNo" id="phoneNoId"
+									value="${customer.phoneNo}">
+							</div>
+							<div class="col-3">
+								<label for="subscriptionId" class="font-weight-bold">Subscription Type</label> <select
+									name="subscription" id="subscriptionId" class="form-control">
+									<option value="0">-select-</option>
+									<c:forEach items="${subList}" var="subscription">
+										<option value="${subscription.subId}"
+											<c:if test="${subscription.subId == customer.subscription.subId}">selected='selected'</c:if>>${subscription.subType}</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="col-3">
+								<label for="durationId" class="font-weight-bold">Duration(in months)</label> <input
+									type="text" class="form-control" name="duration" id="durationId" 
+									oninput="findSubCostBySubandDuration(this.value)">
+							</div>
+							<div class="col-3">
+								<label for="totalId" class="font-weight-bold">Total Cost</label> 
+								<input type="text" readonly="readonly" class="form-control" name="total"
+									id="totalId">
+							</div>
+						</div>
+						<div class="mt-2 text-center">
+							<input type="submit" class="btn btn-success"> <input
+								type="reset" class="btn btn-warning">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-2">
+			<div class="h3">Your Subscription Details</div>
+
+
+
+			<table class="table table-bordered table-striped mt-2">
+				<thead>
+					<tr>
+						<th>Sl.#</th>
+						<th>Customer Id</th>
+						<th>Customer Name</th>
+						<th>Age</th>
+						<th>Phone No</th>
+						<th>Subscription Type</th>
+						<th>Valid From</th>
+						<th>Expired On</th>
+						<th>Upgrade Plan</th>
+					</tr>
+
+				</thead>
+
+				<tbody>
+					<c:forEach items="${customerList}" var="customer" varStatus="counter">
+						<tr>
+							<td>${counter.count}</td>
+							<td>${customer.customerId}</td>
+							<td>${customer.customerName}</td>
+							<td>${customer.age}</td>
+							<td>${customer.phoneNo}</td>
+							<td>${customer.subscription.subType}</td>
+							<td><fmt:formatDate pattern="dd-MM-yyyy" value="${customer.validDate}" /></td>
+							<td><fmt:formatDate pattern="dd-MM-yyyy" value="${customer.validTo}" /></td>
+							<td><a
+								class="btn btn-primary" href="./updatePlan?cId=${customer.customerId}">Update</a></td>
+						</tr>
+					</c:forEach>
+
+				</tbody>
+
+			</table>
+
+
+
+		</div>
+
+
+
+
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			setTimeout(function() {
+				document.getElementById("aId").style.display = 'none';
+			}, 2000);
+
+		});
+
+		function validateForm() {
+
+			var cId = $('#customerId').val();
+			var pId = $('#productId').val();
+			var sQnty = $('#salesQuantityId').val();
+			var status = true;
+			if (cId == 0) {
+				alert("Plz select a customer name");
+				status = false;
+			}
+			if (pId == 0) {
+				alert("plz select a product");
+				status = false;
+			}
+			if (sQnty == "") {
+				alert("plz give a quantity");
+				status = false;
+			} else {
+				var aQnty = Number($('#qnId').val());
+				var sqn = Number(sQnty);
+				if (sqn > aQnty) {
+					alert("Sales quantity must be same or less than available quantity");
+					status = false;
+				}
+
+			}
+			return status;
+		}
+		function findSubCostBySubandDuration(du) {
+			var sub = $('#subscriptionId').val();
+			$.ajax({
+				type : 'GET',
+				url : 'findSubCostBySubandDuration',
+				data : {
+					subscriptionId : sub,
+					duration : du
+				},
+				success : function(resp) {
+					//alert(resp);
+					$('#totalId').val(resp);
+				}
+			});
+
+		}
+	</script>
+</body>
+</html>
